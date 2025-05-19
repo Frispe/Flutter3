@@ -34,7 +34,10 @@ class MovieCubit extends Cubit<MovieState> {
     HiveHelper.getMoviesBox().add(movie);
     loadMovies();
   }
-
+  void updateMovie(int index, Movie updatedMovie) {
+    HiveHelper.getMoviesBox().putAt(index, updatedMovie);
+    loadMovies();
+  }
   void deleteMovie(int index) {
     HiveHelper.getMoviesBox().deleteAt(index);
     loadMovies();

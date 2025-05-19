@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'hive_helper.dart';
 import 'movie.dart';
 import 'movie_cubit.dart';
-import 'theme_cubit.dart'; 
+import 'theme_cubit.dart';
+import 'edit_movie_dialog.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +47,6 @@ class _MovieListScreenState extends State<MovieListScreen> {
   final TextEditingController _genreController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   File? _imageFile;
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +120,18 @@ class _MovieListScreenState extends State<MovieListScreen> {
                             : null,
                         title: Text(movie.title),
                         subtitle: Text('${movie.year} - ${movie.genre}'),
+                        onTap: () async {
+                          final updatedMovie = await showDialog<Movie>(
+                            context: context,
+                            builder: (context) => EditMovieDialog(
+                              movie: movie,
+                              index: index,
+                            ),
+                          );
+                          if (updatedMovie != null) {
+                            context.read<MovieCubit>().updateMovie(index, updatedMovie);
+                          }
+                        },
                         trailing: IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () {
